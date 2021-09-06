@@ -1,24 +1,36 @@
 {% extends "partners/base.html" %} {% block content %}
-<form class="needs-validation" id="partner_form" action="{% url 'api:partner-list' %}">
+<form class="needs-validation border border-1 rounded shadow-sm p-3 my-3" id="partner_form" method="POST" novalidate>
+  {% csrf_token %}
+  {% if partner_form.errors %}
+    <div class="alert alert-danger" role="alert">
+      Form has some errors! Please fix and submit again.
+    </div>
+  {% else %}
+    <div class="alert" style="display: none;"></div>
+  {% endif %}
   {{partner_form.as_p}}
   <div class="text-center">
     <button class="btn btn-lg btn-primary" type="submit">
-      Add New Partner
+      {% if is_adding == 'yes' %}
+        Add New
+      {% else %}
+        Update
+      {% endif %}
+      Partner
     </button>
   </div>
 </form>
 {% endblock %} {% block extra_footer_tags %}
 <script type="text/javascript">
-const getFormJSON = (form) => {
-  const data = new FormData(form);
-  return Array.from(data.keys()).reduce((result, key) => {
-    result[key] = data.get(key);
-    return result;
-  }, {});
-};
+  const getFormJSON = (form) => {
+    const data = new FormData(form);
+    return Array.from(data.keys()).reduce((result, key) => {
+      result[key] = data.get(key);
+      return result;
+    }, {});
+  };
 
   document.addEventListener("DOMContentLoaded", (e) => {
-    console.log("Partners Loading...");
     const form = document.querySelector("#partner_form");
     form.addEventListener(
       "submit",
@@ -27,7 +39,9 @@ const getFormJSON = (form) => {
           event.preventDefault();
           event.stopPropagation();
 
-          fetch(form.getAttribute('action'), {
+          const alert_box = form.querySelector('.alert');
+
+          fetch("{% url 'api:partner-list' %}", {
             method: 'POST',
             cache: 'no-cache',
             headers: {
@@ -36,12 +50,24 @@ const getFormJSON = (form) => {
             },
             body: JSON.stringify(getFormJSON(form))
           })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log(data);
+            // .then((response) => response.json())
+            .then((response) => {
+              if(!response.ok) {
+                console.error('Error! Error!');
+                alert_box.classList.add('alert-danger');
+                alert_box.innerHTML = `Error! ${response.status} : ${response.statusText}`;
+              } else {
+                console.log('Success', response.data);
+                alert_box.classList.add('alert-success');
+                alert_box.innerHTML = JSON.stringify(response.data);
+              }
+              alert_box.style.display = 'block';
             })
-            .catch((reason) => {
-              console.log(reason);
+            .catch((error) => {
+              console.error('Error', error);
+              alert_box.classList.add('alert-danger');
+              alert_box.innerHTML = JSON.stringify(error);
+              alert_box.style.display = 'block';
             });
         }
 

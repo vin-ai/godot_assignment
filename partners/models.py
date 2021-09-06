@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Partner(models.Model):
@@ -18,11 +19,14 @@ class Partner(models.Model):
     def __str__(self) -> str:
         return self.name.__str__()
 
+    def get_absolute_url(self):
+        return reverse("api:partner-detail", kwargs={"pk": self.pk})
+
 
 class Member(models.Model):
     partner = models.ForeignKey(
         Partner, related_name='members', on_delete=models.PROTECT)
-    name = models.CharField('Member Name', max_length=120, unique=True)
+    name = models.CharField('Member Name', max_length=120)
     mobile_number = models.CharField('Mobile number', max_length=15)
     email = models.EmailField('Member email')
 
@@ -34,3 +38,6 @@ class Member(models.Model):
 
     def __str__(self) -> str:
         return self.name.__str__()
+
+    def get_absolute_url(self):
+        return reverse("partner:member-update", kwargs={"pk": self.partner.pk, 'mem_pk': self.pk})

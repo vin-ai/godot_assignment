@@ -8,7 +8,7 @@
   <div class="partners-list"></div>
 </div>
 <template id="new_partner_detail_template">
-<div class="card mb-3">
+<div class="card">
   <div class="card-header">
     <p class="m-0">Partner Name</p>
     <h4 class="partner-name"></h3>
@@ -45,22 +45,13 @@
 <script>
   const append_partner = (partner_obj) => {
     const template = document.querySelector('#new_partner_detail_template');
-    const template_clone = template.content.cloneNode(true);
+    var template_clone = template.content.cloneNode(true);
     for(const field in partner_obj) {
         const partner_field = template_clone.querySelector(`.partner-${field}`);
         if(!partner_field) {
           continue;
         }
         partner_field.textContent = partner_obj[field];
-    }
-    // Updating action button URLs
-    const btn_members = template_clone.querySelector('.link-view-members');
-    if(btn_members) {
-      btn_members.setAttribute('href', partner_obj['members_url']);
-    }
-    const btn_partner = template_clone.querySelector('.link-edit-partner');
-    if(btn_partner) {
-      btn_partner.setAttribute('href', partner_obj['url']);
     }
     document.querySelector('.partners-list').appendChild(template_clone);
   };

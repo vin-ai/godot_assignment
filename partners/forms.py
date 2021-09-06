@@ -21,6 +21,8 @@ class MemberForm(forms.ModelForm):
         model = Member
         exclude = ['is_active', 'is_removed', 'on_created', 'on_updated']
         widgets = {
-            # 'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Partner name'}),
-            'name': forms.Textarea(attrs={'cols': 80, 'rows': 20}),
+            'partner': forms.HiddenInput(),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Member name'}),
+            'mobile_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Member Mobile Number'}),
+            'email': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Partner email'}),
         }
