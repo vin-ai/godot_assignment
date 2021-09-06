@@ -1,0 +1,14 @@
+-r ./requirements.txt
+
+# Dev only deps
+django-debug-toolbar
+ipython
+codecov
+coverage
+coveralls
+unittest2
+pytest
+pylint
+tox
+selenium
+Werkzeug

@@ -1,0 +1,49 @@
+{% extends "partners/base.html" %} {% block content %}
+<div class="py-2">
+  <div class="text-end mb-3">
+    <a href="{% url 'partner:add' %}" role="button" class="btn btn-lg btn-outline-primary"
+      >Add New Partner</a
+    >
+  </div>
+  <div class="partners-list">
+    <div class="card">
+      <div class="card-header">
+        <p class="m-0">Partner Name</p>
+        <h4>ABC Company</h3>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col">
+            <p class="m-0">Partner GST (optional):</p>
+            <h5>Skjhfkjsfajfa</h5>
+          </div>
+          <div class="col">
+            <p class="m-0">Partner website:</p>
+            <h5>ebacompany.com</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <p class="m-0">Partner Phone:</p>
+            <h5>+91-98765-80987</h5>
+          </div>
+          <div class="col">
+            <p class="m-0">Partner email:</p>
+            <h5>contact@abccompany.com</h5>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a href="#" role="button" class="btn btn-info">View Members</a>
+        <a href="#" role="button" class="btn btn-outline-secondary float-end">Edit Partner Details</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_footer_tags %}
+<script>
+  document.addEventListener("DOMContentLoaded", (e) => {
+    console.log("Partners Loading...");
+  });
+</script>
+{% endblock %}
