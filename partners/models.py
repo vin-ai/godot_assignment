@@ -37,7 +37,7 @@ class Member(models.Model):
     is_removed = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return self.name.__str__()
+        return str(self.name)
 
     def get_absolute_url(self):
-        return reverse("partner:member-update", kwargs={"pk": self.partner.pk, 'mem_pk': self.pk})
+        return reverse("partner-member-update", kwargs={"partner_pk": self.partner.pk, 'pk': self.pk})

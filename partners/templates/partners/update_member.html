@@ -22,6 +22,13 @@
       Member
     </button>
   </div>
+  {% if messages %}
+  <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
 </form>
 
 {% if is_adding == 'yes' %}
@@ -77,6 +84,11 @@
     .then((data)=>{
       if(data.count<1) {
         console.error('No Members Found!');
+        const list_container = document.querySelector('.members-list');
+        list_container.innerHTML = `
+        <h1 class="text-danger">No Members Found Yet!</h1>
+        `;
+        list_container.style.display = 'block';
       } else {
         // Empty list to re-populate again
         document.querySelector('.members-list').InnerHTML = '';
@@ -95,49 +107,45 @@
     const form = document.querySelector("#member_form");
     form.addEventListener(
       "submit",
-      (event) => {
-        if (!form.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
+      async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
 
-          const alert_box = form.querySelector('.alert');
+        const alert_box = form.querySelector('.alert');
 
-          fetch("{{ api_url_member_add }}", {
-            method: 'POST',
-            cache: 'no-cache',
-            headers: {
-              'Content-Type': 'application/json'
-              // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: JSON.stringify(getFormJSON(form))
-          })
-            // .then((response) => response.json())
-            .then((response) => {
-              if(!response.ok) {
-                console.error('Error! Error!');
-                alert_box.classList.add('alert-danger');
-                alert_box.innerHTML = `Error! ${response.status} : ${response.statusText}`;
-              } else {
-                console.log('Success', response.data);
-                alert_box.classList.add('alert-success');
-                alert_box.innerHTML = JSON.stringify(response.data);
-                if('{{ is_adding }}' === 'yes') {
-                  append_membergetFormJSON(form)();
-                } else {
-                  console.log('redirect');
-                  //location.href = "{{ api_url_member_ist }}";
-                }
-                form.reset();
-              }
-              alert_box.style.display = 'block';
-            })
-            .catch((error) => {
-              console.error('Error', error);
-              alert_box.classList.add('alert-danger');
-              alert_box.innerHTML = `This: ${error}`;
-              alert_box.style.display = 'block';
-            });
-        }
+        await fetch("{{ api_post_endpoint }}", {
+          method: '{{ submit_method }}',
+          cache: 'no-cache',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(getFormJSON(form))
+        })
+        .then((response) => {
+          if(!response.ok) {
+            console.error('Error! Error!');
+            alert_box.classList.add('alert-danger');
+            alert_box.innerHTML = `Error! ${response.status} : ${response.statusText}`;
+          } else {
+            console.log('Success');
+            alert_box.classList.add('alert-success');
+            alert_box.innerHTML = `Success! ${response.status} : ${response.statusText}`;
+            if('{{ is_adding }}' === 'yes') {
+              append_member(getFormJSON(form));
+            } else {
+              console.log('redirect or reset form!');
+              //location.href = "{{ api_url_member_list }}";
+            }
+            form.reset();
+          }
+          alert_box.style.display = 'block';
+        })
+        .catch((error) => {
+          console.error('Error', error);
+          alert_box.classList.add('alert-danger');
+          alert_box.innerHTML = `This: ${error}`;
+          alert_box.style.display = 'block';
+        });
 
         form.classList.add("was-validated");
       },

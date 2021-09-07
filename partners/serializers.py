@@ -23,7 +23,7 @@ class PartnerSerializer(serializers.ModelSerializer):
 
 class MemberSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
-    partner = serializers.HiddenField(default='w')
+    # partner = serializers.HiddenField(default='w')
 
     def get_url(self, obj):
         # return obj.get_absolute_url()

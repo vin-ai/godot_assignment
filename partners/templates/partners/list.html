@@ -1,9 +1,8 @@
 {% extends "partners/base.html" %} {% block content %}
 <div class="py-2">
   <div class="text-end mb-3">
-    <a href="{% url 'partner:add' %}" role="button" class="btn btn-lg btn-outline-primary"
-      >Add New Partner</a
-    >
+    <a href="{% url 'partner:add' %}" role="button"
+      class="btn btn-lg btn-outline-primary">Add New Partner</a>
   </div>
   <div class="partners-list"></div>
 </div>
@@ -65,11 +64,16 @@
     document.querySelector('.partners-list').appendChild(template_clone);
   };
   document.addEventListener("DOMContentLoaded", async (e) => {
-    await fetch('{% url 'api:partner-list' %}')
+    await fetch("{% url 'api:partner-list' %}")
     .then((response)=>response.json())
     .then((data)=>{
       if(data.count<1) {
         console.error('No Partners Found!');
+        const list_container = document.querySelector('.partners-list');
+        list_container.innerHTML = `
+        <h1 class="text-danger">No Partners Found Yet!</h1>
+        `;
+        list_container.style.display = 'block';
       } else {
         for(const index in data.results) {
           append_partner(data.results[index]);
